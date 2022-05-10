@@ -1,0 +1,113 @@
+<!-- <html>
+<head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready( function(){
+
+        $.ajax({
+            url: 'https://cbridge-prod2.celer.network/v2/getTransferStatus',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: '{"transferId": "3C3E10F0D6C702B2558C5A180C0955BA7DFCF1FB54EFCE05341F7ADA305485B2"}',
+            type: 'POST',
+            success: function(data, textStatus, jqXHR){
+                $("#results").append("received by ajax: " + data);
+                },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                $("#results").append("error");
+                }
+            });
+    });
+
+</script>
+</head>
+<body>
+<div id="results"></div>
+</body>
+</html> -->
+
+
+<html>
+  <head>
+  </head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- <script type="text/javascript">
+      $('#poster').click(function(event){
+    
+        var obj = $('register_form').serializeJSON();
+    console.log(obj);
+        $.ajax({
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            type: 'POST',
+            url: 'https://cbridge-prod2.celer.network/v2/getTransferStatus',
+            dataType: 'json',
+            data: JSON.stringify(obj),
+            contentType : 'application/json',
+            success: function(data) {
+                alert(data)
+            }
+        })
+        .done(function(data, textStatus, jqXHR){
+            console.log("Ajax completed: " + data);
+        })
+        .fail(function(jqXHR, textStatus, errorThrown){
+            console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+        });
+        event.preventDefault();
+
+       return false;
+     });
+    </script> -->
+    
+  <body>
+
+<script>
+function myFunction() {
+  const transferId = document.getElementById('transferId').value;
+  $.ajax({
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            type: 'POST',
+            url: 'https://cbridge-prod2.celer.network/v2/getTransferStatus',
+            dataType: 'json',
+            data: `{"transferId": "${transferId}"}`,
+            contentType : 'application/json',
+            success: function(data) {
+              console.log("data", data)
+                if ([3,4].includes(data.status)) {
+                    document.getElementById('status').innerText='pending'
+                } else if (data.status === 5) {
+                    document.getElementById('status').innerText='completed'
+                } else if (data.status === 6) {
+                    document.getElementById('status').innerText='refund'
+                } else if ([7,8,9].includes(data.status)) {
+                  document.getElementById('status').innerText='processing refund'
+                } else if (data.status === 10) {
+                  document.getElementById('status').innerText='refund completed'
+                } else if (data.status === 0) {
+                  document.getElementById('status').innerText='transfer not found'
+                } else if (data.status === 1) {
+                  document.getElementById('status').innerText='transfer not yet confirmed on chain'
+                } else if (data.status === 2) {
+                  document.getElementById('status').innerText='transfer failed'
+                } else {
+                    document.getElementById('status').innerText='error'
+                }
+            }
+        })
+}
+</script>
+    <form id="register_form">
+      <input name="transferId" id="transferId">
+    </form>
+    <div onclick="myFunction()">Get Status</div>
+    <div id='status'></div>
+  </body>
+</html>
