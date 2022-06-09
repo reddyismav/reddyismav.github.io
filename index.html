@@ -1,113 +1,264 @@
-<!-- <html>
-<head>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-<script type="text/javascript">
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head>
+  <body data-new-gr-c-s-check-loaded="14.1062.0" data-gr-ext-installed="" data-new-gr-c-s-loaded="14.1062.0">
+    <h1>Check and Claim your Celer Refund Anon!</h1>
+    <p>You can check code <a href="https://github.com/Aniket965/claimop">here</a> or view the page source.</p>
 
-    $(document).ready( function(){
-
-        $.ajax({
-            url: 'https://cbridge-prod2.celer.network/v2/getTransferStatus',
-            contentType: 'application/json',
-            dataType: 'json',
-            data: '{"transferId": "3C3E10F0D6C702B2558C5A180C0955BA7DFCF1FB54EFCE05341F7ADA305485B2"}',
-            type: 'POST',
-            success: function(data, textStatus, jqXHR){
-                $("#results").append("received by ajax: " + data);
-                },
-            error: function(XMLHttpRequest, textStatus, errorThrown){
-                $("#results").append("error");
-                }
-            });
-    });
-
-</script>
-</head>
-<body>
-<div id="results"></div>
-</body>
-</html> -->
-
-
-<html>
-  <head>
-  </head>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-    <!-- <script type="text/javascript">
-      $('#poster').click(function(event){
+    <hr>
+    <p>➡️ 1: Connect your wallet by clicking below. </p>
+    <div> <button class="connect" style="margin-left:25px">connect wallet</button> </div>
+    <p>
+      ➡️ 2: Check your metamask that you are connected to the sending chain.
+    </p>
     
-        var obj = $('register_form').serializeJSON();
-    console.log(obj);
-        $.ajax({
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            type: 'POST',
-            url: 'https://cbridge-prod2.celer.network/v2/getTransferStatus',
-            dataType: 'json',
-            data: JSON.stringify(obj),
-            contentType : 'application/json',
-            success: function(data) {
-                alert(data)
-            }
-        })
-        .done(function(data, textStatus, jqXHR){
-            console.log("Ajax completed: " + data);
-        })
-        .fail(function(jqXHR, textStatus, errorThrown){
-            console.log("Ajax problem: " + textStatus + ". " + errorThrown);
-        });
-        event.preventDefault();
+    <p>
+      ➡️ 3: Paste your transaction hash below. Only the hash, no explorer links.
+    </p>
 
-       return false;
-     });
-    </script> -->
+    <div>
+        <textarea style="height:15px;width:600px;margin-left:25px"></textarea>
+    <div>
     
-  <body>
+    <p> ➡️ 4: Clink on this button to check if refund is needed.</p>
+    <div> <button class="check" style="margin-left:25px">Check For Refund.</button></div>
+    <!-- <p>
+        ➡️ 5: Check your metamask that you are connected to the sending chain. 
+    </p>
+    <p> ➡️ 6: Click on the button below to claim the refund if refunded. </p>
+    <div> <button class="claim" style="margin-left:25px;margin-bottom:20px">Claim Refund.</button></div>
+    <hr>
+    <div> What to do next? Go bridge again on <a href="https://bungee.exchange/" target="_blank">Bungee!</a> </div>
+    <div>
+        Looking for gas on a new chain Anon! Go use <a href="https://bungee.exchange/refuel" target="_blank" >Refuel</a>.
+    </div> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.2.0/ethers.umd.min.js" integrity="sha512-YrJ7ZzmtmVJdwCwu6B91ThUGLfNjsTdHf1IdPf3J7AZQIpVDvahcBLWoKC1ebZ9RN6upm9ZheIFKSf7s7k/ZYQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript">
 
-<script>
-function myFunction() {
-  const transferId = document.getElementById('transferId').value;
-  $.ajax({
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            type: 'POST',
-            url: 'https://cbridge-prod2.celer.network/v2/getTransferStatus',
-            dataType: 'json',
-            data: `{"transferId": "${transferId}"}`,
-            contentType : 'application/json',
-            success: function(data) {
-              console.log("data", data)
-                if ([3,4].includes(data.status)) {
-                    document.getElementById('status').innerText='pending'
-                } else if (data.status === 5) {
-                    document.getElementById('status').innerText='completed'
-                } else if (data.status === 6) {
-                    document.getElementById('status').innerText='refund'
-                } else if ([7,8,9].includes(data.status)) {
-                  document.getElementById('status').innerText='processing refund'
-                } else if (data.status === 10) {
-                  document.getElementById('status').innerText='refund completed'
-                } else if (data.status === 0) {
-                  document.getElementById('status').innerText='transfer not found'
-                } else if (data.status === 1) {
-                  document.getElementById('status').innerText='transfer not yet confirmed on chain'
-                } else if (data.status === 2) {
-                  document.getElementById('status').innerText='transfer failed'
-                } else {
-                    document.getElementById('status').innerText='error'
+        // CONSTANTS
+        const sendTopicLog = '0x89d8051e597ab4178a863a5190407b98abfeff406aa8db90c59af76612e58f01';
+        const celerSocketRefundUrl = 'https://celer-refund.socket.tech/api/v1/trigger-withdraw';
+        const socketCelerImplAddresses = {
+            1: '0x5427FEFA711Eff984124bFBB1AB6fbf5E3DA1820',
+            56: '0xdd90E5E87A2081Dcf0391920868eBc2FFB81a1aF',
+            100: '0x3795C36e7D12A8c252A20C5a7B455f7c57b60283',
+            42161: '0x1619DE6B6B20eD217a58d00f37B9d47C7663feca',
+            250: '0x374B8a9f3eC5eB2D97ECA84Ea27aCa45aa1C57EF',
+            137: '0x88DCDC47D2f83a99CF0000FDF667A468bB958a78',
+            10: '0x9D39Fc627A6d9d9F8C831c16995b209548cc3401',
+            43114: '0xef3c714c9425a8F3697A9C969Dc1af30ba82e5d4',
+            1313161554: '0x841ce48F9446C8E281D3F1444cB859b4A6D0738C'
+        };
+        // METAMASK CONNECTION
+        document.querySelector('.connect').onclick = async () =>  {
+            if (window.ethereum) { //check if Metamask is installed
+                try {
+                    const address = await window.ethereum.enable(); //connect Metamask
+                    const obj = {
+                            connectedStatus: true,
+                            status: "",
+                            address: address
+                        }
+                        return obj;
+                    
+                } catch (error) {
+                    return {
+                        connectedStatus: false,
+                        status: "🦊 Connect to Metamask using the button on the top right."
+                    }
                 }
+                
+            } else {
+                    return alert('Please Install Metamask.')
+            } 
+        }
+
+        // Check If the transaction is refunded or not.
+        document.querySelector('.check').onclick = async () => {
+            try {
+                const txHash = document.querySelector('textarea').value;
+                if (!txHash) return alert('Please paste your transaction hash in the box.')
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const txReceipt = await provider.getTransactionReceipt(txHash);
+
+                if (txReceipt && txReceipt.status === 0) return alert('Transaction has failed. Please check your transaction hash on the chain explorer.')
+                if (txReceipt && txReceipt.status === 1) {
+                    const { logs } = txReceipt;
+                    const celerSourceLog = await logs.find((log) => {
+                        const { topics } = log;
+                        if (topics[0].toLowerCase() === sendTopicLog) return log;
+                    });
+
+                    if (!celerSourceLog) throw new Error('Invalid Celer Bridge Transaction');
+
+                    const { topics, data } = celerSourceLog;
+
+                    const decodedData = ethers.utils.defaultAbiCoder.decode(
+                        [
+                        'bytes32',
+                        'address',
+                        'address',
+                        'address',
+                        'uint256',
+                        'uint64',
+                        'uint64',
+                        'uint32',
+                        ],
+                        data,
+                    );
+
+                    const transferId = decodedData[0];
+                    const estimatedAmount = decodedData[4].toString();
+                    let body = {
+                        transfer_id: transferId,
+                    };
+                    let result;
+                    let error;
+                    await fetch('https://cbridge-prod2.celer.network/v2/getTransferStatus', {
+                        method: "POST",
+                        body: JSON.stringify(body),
+                        headers: {"Content-type": "application/json; charset=UTF-8"}
+                    }).then(response => response.json()) 
+                        .then(json => {result = json;
+                        console.log(json, typeof json)})
+                        .catch(err => error = err);
+                    if (error) return alert('Error in Checking Refund Status');
+                    if (result && result.status) {
+                        const status = result.status;
+                        if (status === 0) return alert('Celer Network could not find this transaction.');
+                        if (status === 1) return alert('Celer bridge is confirming your transaction. Please wait...');
+                        if (status === 2) return alert('Transaction has failed. No funds have been detected');
+                        if (status === 3) return alert ('Transaction Confirmation going on. Please Wait ...');
+                        if (status === 4) return alert ('Celer is releasing your funds on the destination chain. Please wait ...');
+                        if (status === 5) return alert (`Transfer is complete. Here is your transaction hash: ${result.dst_block_tx_link}`);
+                        if (status === 6) {
+                            let result_refund;
+                            let error_refund;
+                            fetch(`${celerSocketRefundUrl}?transferId=${transferId}&estimatedAmount=${estimatedAmount}`, {}).then(response => response.json()) 
+                                .then(json => result_refund = json)
+                                .catch(err => error_refund = err);
+                            if (error_refund) return alert('Error in checking the refund status');
+                            return alert ('TRANSACTION HAS BEEN REFUNDED.');
+                        }
+                        if (status === 7) return alert ('Celer Bridge is initiating the refund request. Please Wait for a few mins and then click on claim ...');
+                        if (status === 8) return alert ('Please click on "Claim your refund" to start your refund process. You will be asked to do a transaction.');
+                        if (status === 9) return alert ('Refund Process has been already initiated. Please Wait ...');
+                        if (status === 10) return alert ('Transaction has been refunded successfully. Sorry for the inconvenience caused.');
+                    }
+                }
+            } catch(e) {
+                alert('Error occured while checking refund.');
+                console.log(e);
             }
-        })
-}
-</script>
-    <form id="register_form">
-      <input name="transferId" id="transferId">
-    </form>
-    <div onclick="myFunction()">Get Status</div>
-    <div id='status'></div>
-  </body>
-</html>
+        }
+
+        // Claim the refund.
+        document.querySelector('.claim').onclick = async () =>  {
+            try {
+                const txHash = document.querySelector('textarea').value;
+                if (!txHash) return alert('Please paste your transaction hash in the box.')
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const txReceipt = await provider.getTransactionReceipt(txHash)
+
+                if (txreceipt && txReceipt.status === 0) return alert('Transaction has failed. Please check your transaction hash on the chain explorer.')
+                if (txReceipt && txReceipt.status === 1) {
+                    const { logs } = txReceipt;
+                    const celerSourceLog = await logs.find((log) => {
+                        const { topics } = log;
+                        if (topics[0].toLowerCase() === sendTopicLog) return log;
+                    });
+
+                    if (!celerSourceLog) throw new Error('Invalid Celer Bridge Transaction');
+
+                    const { topics, data } = celerSourceLog;
+
+                    const decodedData = ethers.utils.defaultAbiCoder.decode(
+                        [
+                        'bytes32',
+                        'address',
+                        'address',
+                        'address',
+                        'uint256',
+                        'uint64',
+                        'uint64',
+                        'uint32',
+                        ],
+                        data,
+                    );
+
+                    const transferId = decodedData[0];
+                    const estimatedAmount = decodedData[4].toString();
+                    let body = {
+                        transfer_id: transferId,
+                    };
+                    let result;
+                    let error;
+                    await fetch('https://cbridge-prod2.celer.network/v2/getTransferStatus', {
+                        method: "POST",
+                        body: JSON.stringify(body),
+                        headers: {"Content-type": "application/json; charset=UTF-8"}
+                    }).then(response => response.json()) 
+                        .then(json => result = json)
+                        .catch(err => error = err);
+                    if (error) return alert('Error in Checking Refund Status');
+                    if (result && result.status) {
+                        const { status, sorted_sigs, signers: _signers, powers: _powers, wd_onchain } = result;
+                        if (status === 0) return alert('Celer Network could not find this transaction.');
+                        if (status === 1) return alert('Celer bridge is confirming your transaction. Please wait...');
+                        if (status === 2) return alert('Transaction has failed. No funds have been detected');
+                        if (status === 3) return alert ('Transaction Confirmation going on. Please Wait ...');
+                        if (status === 4) return alert ('Celer is releasing your funds on the destination chain. Please wait ...');
+                        if (status === 5) return alert (`Transfer is complete. Here is your transaction hash: ${result.dst_block_tx_link}`);
+                        if (status === 6) {
+                            let result_refund;
+                            let error_refund;
+                            await fetch(`${celerSocketRefundUrl}?transferId=${transferId}&estimatedAmount=${estimatedAmount}`, {}).then(response => response.json()) 
+                                .then(json => result_refund = json)
+                                .catch(err => error_refund = err);
+                            if (error_refund) return alert('Error in checking the refund status');
+                            return alert ('Celer Bridge is initiating the refund request. Please Wait for a few mins and try again.');
+                        }
+                        if (status === 7) return alert ('Celer Bridge is initiating the refund request. Please Wait for a few mins and try again...');
+                        if (status === 8) {
+                            const chainId = await provider.getNetwork();
+                            const wdmsg = ethers.utils.base64.decode(wd_onchain);
+
+                            const signers = _signers.map((item) => {
+                                const decodeSigners = ethers.utils.base64.decode(item);
+                                const hexlifyObj = ethers.utils.hexlify(decodeSigners);
+                                return ethers.utils.getAddress(hexlifyObj);
+                            });
+
+                            const sigs = sorted_sigs.map((item) => {
+                                return ethers.utils.base64.decode(item);
+                            });
+
+                            const powers = _powers.map((item) => {
+                                return ethers.utils.base64.decode(item);
+                            });
+                            try {
+                                const socketCelerImpl = new ethers.Contract(
+                                    socketCelerImplAddresses[chainId],
+                                    ['function refundCelerUser(bytes,bytes[],address[],uint256[])'], 
+                                    provider.getSigner()
+                                );
+                                const tx = socketCelerImpl.refundCelerUser(wdmsg, sigs, signers, powers);
+                                await tx.wait();
+                                return alert ('Refund has been successful. Please Check your wallet.');
+                            } catch (error) {
+                                return alert('Error occured in claiming process: ', error.message);
+                            }
+                        }
+                        if (status === 9) return alert ('Refund Process has been already initiated. Please Wait ...');
+                        if (status === 10) return alert ('Refund has been successful. Please Check your wallet. Sorry for the inconvenience caused. We are trying to smoothen the experience.');
+                    }
+                }
+            } catch(e) {
+                alert('Error occured while checking refund.');
+                console.log(e);
+            }
+        }
+        
+    </script>
+  
+
+</body></html>
