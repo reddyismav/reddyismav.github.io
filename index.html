@@ -21,11 +21,11 @@
     
     <p> ➡️ 4: Clink on this button to check if refund is needed.</p>
     <div> <button class="check" style="margin-left:25px; margin-bottom:25px">Check For Refund.</button></div>
-    <!-- <p>
+    <p>
         ➡️ 5: Check your metamask that you are connected to the sending chain. 
     </p>
     <p> ➡️ 6: Click on the button below to claim the refund if refunded. </p>
-    <div> <button class="claim" style="margin-left:25px;margin-bottom:20px">Claim Refund.</button></div> -->
+    <div> <button class="claim" style="margin-left:25px;margin-bottom:20px">Claim Refund.</button></div>
     <div> What to do next? Claim your refund by going to the history section on the celer website. You will need to connect your wallet <a href="https://cbridge.celer.network/#/transfer" target="_blank">https://cbridge.celer.network/#/transfer.</a> </div>
     <hr>
     <div>
@@ -38,15 +38,15 @@
         const sendTopicLog = '0x89d8051e597ab4178a863a5190407b98abfeff406aa8db90c59af76612e58f01';
         const celerSocketRefundUrl = 'https://celer-refund.socket.tech/api/v1/refund/trigger-withdraw';
         const socketCelerImplAddresses = {
-            1: '0x5427FEFA711Eff984124bFBB1AB6fbf5E3DA1820',
-            56: '0xdd90E5E87A2081Dcf0391920868eBc2FFB81a1aF',
+            1: '0x47E136cf4A96e1afa72e19022f9699Bbaa1BE60e',
+            56: '0xdA089249ccE9d9726Fa6b755c5ec3d9C260C90C2',
             100: '0x3795C36e7D12A8c252A20C5a7B455f7c57b60283',
-            42161: '0x1619DE6B6B20eD217a58d00f37B9d47C7663feca',
-            250: '0x374B8a9f3eC5eB2D97ECA84Ea27aCa45aa1C57EF',
-            137: '0x88DCDC47D2f83a99CF0000FDF667A468bB958a78',
-            10: '0x9D39Fc627A6d9d9F8C831c16995b209548cc3401',
-            43114: '0xef3c714c9425a8F3697A9C969Dc1af30ba82e5d4',
-            1313161554: '0x841ce48F9446C8E281D3F1444cB859b4A6D0738C'
+            42161: '0x0Aa26a14C2559319F9dEf7304E93db5aE6b32fb9',
+            250: '0xb584D4bE1A5470CA1a8778E9B86c81e165204599',
+            137: '0x14aC5b3580dD1e546CD7287Cd1faDba9A8736628',
+            10: '0xb8c32878c69F4cC4705D0Bd99bca082C4eEFd76D',
+            43114: '0xA7f7e4fE8E4cdDCD9969Bd3fbcFF67000CD7DE47',
+            1313161554: '0x5800249621DA520aDFdCa16da20d8A5Fc0f814d8'
         };
         // METAMASK CONNECTION
         document.querySelector('.connect').onclick = async () =>  {
