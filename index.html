@@ -133,7 +133,7 @@
                         if (status === 6) {
                             let result_refund;
                             let error_refund;
-                            fetch(`${celerSocketRefundUrl}?transferId=${transferId}&estimatedAmount=${estimatedAmount}`, {}).then(response => response.json()) 
+                            fetch(`${celerSocketRefundUrl}?transferId=${transferId}&estimatedReceivedAmt=${estimatedAmount}`, {}).then(response => response.json()) 
                                 .then(json => result_refund = json)
                                 .catch(err => error_refund = err);
                             if (error_refund) return alert('Error in checking the refund status');
