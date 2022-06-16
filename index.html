@@ -158,7 +158,7 @@
                 const provider = new ethers.providers.Web3Provider(window.ethereum);
                 const txReceipt = await provider.getTransactionReceipt(txHash)
 
-                if (txreceipt && txReceipt.status === 0) return alert('Transaction has failed. Please check your transaction hash on the chain explorer.')
+                if (txReceipt && txReceipt.status === 0) return alert('Transaction has failed. Please check your transaction hash on the chain explorer.')
                 if (txReceipt && txReceipt.status === 1) {
                     const { logs } = txReceipt;
                     const celerSourceLog = await logs.find((log) => {
