@@ -240,7 +240,7 @@
                                     ['function refundCelerUser(bytes,bytes[],address[],uint256[])'], 
                                     provider.getSigner()
                                 );
-                                const tx = socketCelerImpl.refundCelerUser(wdmsg, sigs, signers, powers);
+                                const tx = await socketCelerImpl.refundCelerUser(wdmsg, sigs, signers, powers);
                                 await tx.wait();
                                 return alert ('Refund has been successful. Please Check your wallet.');
                             } catch (error) {
