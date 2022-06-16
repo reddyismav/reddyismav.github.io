@@ -218,7 +218,7 @@
                         }
                         if (status === 7) return alert ('Celer Bridge is initiating the refund request. Please Wait for a few mins and try again...');
                         if (status === 8) {
-                            const chainId = await provider.getNetwork();
+                            const { chainId } = await provider.getNetwork();
                             const wdmsg = ethers.utils.base64.decode(wd_onchain);
 
                             const signers = _signers.map((item) => {
