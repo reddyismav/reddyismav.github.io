@@ -124,7 +124,7 @@
                     };
                     let result;
                     let error;
-                    await fetch('https://cbridge-prod2.celer.network/v2/getTransferStatus', {
+                    await fetch('https://cbridge-prod2.celer.app/v2/getTransferStatus', {
                         method: "POST",
                         body: JSON.stringify(body),
                         headers: {"Content-type": "application/json; charset=UTF-8"}
@@ -203,7 +203,7 @@
                     };
                     let result;
                     let error;
-                    await fetch('https://cbridge-prod2.celer.network/v2/getTransferStatus', {
+                    await fetch('https://cbridge-prod2.celer.app/v2/getTransferStatus', {
                         method: "POST",
                         body: JSON.stringify(body),
                         headers: {"Content-type": "application/json; charset=UTF-8"}
@@ -249,9 +249,9 @@
 
                             const celerImplInterface = new ethers.utils.Interface(['function refundCelerUser(bytes,bytes[],address[],uint256[])']);
                             const functionParams = [wdmsg, sigs, signers, powers];
-                            const txData = abiInterface.encodeFunctionData('refundCelerUser', functionParams);
+                            const txDataCeler = abiInterface.encodeFunctionData('refundCelerUser', functionParams);
                             const routeBytes4 = `0x${celerRouteId[chainId].toString(16).padStart(8, '0')}`;
-                            const txData = `${convertRouteIdTo4BytesHex}${txData.substring(2)}`;
+                            const txData = `${convertRouteIdTo4BytesHex}${txDataCeler.substring(2)}`;
                             try {
                                 const txDetails = {
                                   "to": socketCelerImplAddresses[chainId],
