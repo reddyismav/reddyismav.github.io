@@ -37,16 +37,28 @@
         const sendTopicLog = '0x89d8051e597ab4178a863a5190407b98abfeff406aa8db90c59af76612e58f01';
         const celerSocketRefundUrl = 'https://celer-refund-api.socket.tech/api/v1/refund/trigger-withdraw';
         const socketCelerImplAddresses = {
-            1: '0xB6fb3062405985F700fa23758A3053162ddBeFb9',
-            56: '0x031c67Ee65e508E96c184Fc8D8559B50CedeBaa9',
-            100: '0x3795C36e7D12A8c252A20C5a7B455f7c57b60283',
-            42161: '0x9216253925d1A22CB375EcEf4f33cf93a1D1ff4D',
-            250: '0x6086c6451217241D8e42e134733A542095E13c47',
-            137: '0xb48b743b85Bf955c4c039599A3eCdD6175B6787f',
-            10: '0x0C0858290b6b268a93fB557af06390A3460c5dB6',
-            43114: '0x9ca48cAF8AD2B081a0b633d6FCD803076F719fEa',
-            1313161554: '0xBD9f6198a220046E944D704b7ff2A68b778F4A44'
+            1: '0x3a23F943181408EAC424116Af7b7790c94Cb97a5',
+            56: '0x3a23F943181408EAC424116Af7b7790c94Cb97a5',
+            100: '0x3a23F943181408EAC424116Af7b7790c94Cb97a5',
+            42161: '0x3a23F943181408EAC424116Af7b7790c94Cb97a5',
+            250: '0x3a23F943181408EAC424116Af7b7790c94Cb97a5',
+            137: '0x3a23F943181408EAC424116Af7b7790c94Cb97a5',
+            10: '0x3a23F943181408EAC424116Af7b7790c94Cb97a5',
+            43114: '0x3a23F943181408EAC424116Af7b7790c94Cb97a5',
+            1313161554: '0x3a23F943181408EAC424116Af7b7790c94Cb97a5'
         };
+
+        const celerRouteIds = {
+            1: 3,
+            56: 1,
+            100: 0,
+            42161: 2,
+            250: 1,
+            137: 2,
+            10: 2,
+            43114: 1,
+            1313161554: 0
+        }
         // METAMASK CONNECTION
         document.querySelector('.connect').onclick = async () =>  {
             if (window.ethereum) { //check if Metamask is installed
@@ -234,15 +246,29 @@
                             const powers = _powers.map((item) => {
                                 return ethers.utils.base64.decode(item);
                             });
+
+                            const celerImplInterface = new ethers.utils.Interface(['function refundCelerUser(bytes,bytes[],address[],uint256[])']);
+                            const functionParams = [wdmsg, sigs, signers, powers];
+                            const txData = abiInterface.encodeFunctionData('refundCelerUser', functionParams);
+                            const routeBytes4 = `0x${celerRouteId[chainId].toString(16).padStart(8, '0')}`;
+                            const txData = `${convertRouteIdTo4BytesHex}${txData.substring(2)}`;
                             try {
-                                const socketCelerImpl = new ethers.Contract(
-                                    socketCelerImplAddresses[chainId],
-                                    ['function refundCelerUser(bytes,bytes[],address[],uint256[])'], 
-                                    provider.getSigner()
-                                );
-                                const tx = await socketCelerImpl.refundCelerUser(wdmsg, sigs, signers, powers);
+                                const txDetails = {
+                                  "to": socketCelerImplAddresses[chainId],
+                                  "data": txData,
+                                  "value": "0x00"
+                                };
+                                const tx = await provider.getSigner().sendTransaction(txDetails);
                                 await tx.wait();
-                                return alert ('Refund has been successful. Please Check your wallet.');
+                                return alert ('Refund has been successful. Please Check your wallet.'); 
+//                                 const socketCelerImpl = new ethers.Contract(
+//                                     socketCelerImplAddresses[chainId],
+//                                     ['function refundCelerUser(bytes,bytes[],address[],uint256[])'], 
+//                                     provider.getSigner()
+//                                 );
+//                                 const tx = await socketCelerImpl.refundCelerUser(wdmsg, sigs, signers, powers);
+//                                 await tx.wait();
+//                                 return alert ('Refund has been successful. Please Check your wallet.');
                             } catch (error) {
                                 return alert('Error occured in claiming process: ', error.message);
                             }
