@@ -250,7 +250,7 @@
                             const celerImplInterface = new ethers.utils.Interface(['function refundCelerUser(bytes,bytes[],address[],uint256[])']);
                             const functionParams = [wdmsg, sigs, signers, powers];
                             const txDataCeler = celerImplInterface.encodeFunctionData('refundCelerUser', functionParams);
-                            const routeBytes4 = `0x${celerRouteId[chainId].toString(16).padStart(8, '0')}`;
+                            const routeBytes4 = `0x${celerRouteIds[chainId].toString(16).padStart(8, '0')}`;
                             const txData = `${convertRouteIdTo4BytesHex}${txDataCeler.substring(2)}`;
                             try {
                                 const txDetails = {
