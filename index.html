@@ -264,7 +264,7 @@
                                   "value": "0x00"
                                 };
                                 if (chainId === 324) {
-                                   txDetails = { ...txDetails, gasLimit: "30000000" };
+                                   txDetails = { ...txDetails, gasLimit: "0x1C9C380" };
                                 }
                                 console.log(txDetails);
                                 const tx = await provider.getSigner().sendTransaction(txDetails);
