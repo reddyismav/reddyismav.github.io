@@ -258,7 +258,7 @@
                             const txData = `${routeBytes4}${txDataCeler.substring(2)}`;
                           
                             try {
-                                const txDetails = {
+                                let txDetails = {
                                   "to": socketCelerImplAddresses[chainId],
                                   "data": txData,
                                   "value": "0x00"
