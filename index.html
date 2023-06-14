@@ -256,19 +256,17 @@
                             const txDataCeler = celerImplInterface.encodeFunctionData('refundCelerUser', functionParams);
                             const routeBytes4 = `0x${celerRouteIds[chainId].toString(16).padStart(8, '0')}`;
                             const txData = `${routeBytes4}${txDataCeler.substring(2)}`;
+                          
                             try {
                                 const txDetails = {
                                   "to": socketCelerImplAddresses[chainId],
                                   "data": txData,
                                   "value": "0x00"
                                 };
-                                console.log(txDetails);
-
                                 if (chainId === 324) {
-                                    const tx = await provider.getSigner().sendTransaction(txDetails, { gasLimit: "3000000" });
-                                    await tx.wait();
-                                    return alert ('Refund has been successful. Please Check your wallet.'); 
+                                   txDetails = { ...txDetails, gasLimit: "30000000" };
                                 }
+                                console.log(txDetails);
                                 const tx = await provider.getSigner().sendTransaction(txDetails);
                                 await tx.wait();
                                 return alert ('Refund has been successful. Please Check your wallet.'); 
