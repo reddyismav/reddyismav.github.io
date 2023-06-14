@@ -263,6 +263,12 @@
                                   "value": "0x00"
                                 };
                                 console.log(txDetails);
+
+                                if (chainId === 324) {
+                                    const tx = await provider.getSigner().sendTransaction(txDetails, { gasLimit: "3000000" });
+                                    await tx.wait();
+                                    return alert ('Refund has been successful. Please Check your wallet.'); 
+                                }
                                 const tx = await provider.getSigner().sendTransaction(txDetails);
                                 await tx.wait();
                                 return alert ('Refund has been successful. Please Check your wallet.'); 
